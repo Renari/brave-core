@@ -42,6 +42,7 @@
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_VPN) && !BUILDFLAG(IS_ANDROID)
+#include "brave/browser/brave_vpn/vpn_utils.h"
 #include "brave/browser/ui/webui/brave_vpn/vpn_panel_ui.h"
 #include "brave/components/brave_vpn/brave_vpn_utils.h"
 #endif
@@ -105,7 +106,7 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
 #endif  // BUILDFLAG(OS_ANDROID)
 #if BUILDFLAG(ENABLE_BRAVE_VPN) && !BUILDFLAG(IS_ANDROID)
   } else if (host == kVPNPanelHost) {
-    if (brave_vpn::IsBraveVPNEnabled()) {
+    if (brave_vpn::IsBraveVPNEnabled(profile)) {
       return new VPNPanelUI(web_ui);
     }
 #endif  // BUILDFLAG(ENABLE_BRAVE_VPN)
