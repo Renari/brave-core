@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "brave/components/brave_wallet/browser/ethereum_permission_utils.h"
+#include "brave/components/brave_wallet/browser/permission_utils.h"
 #include "src/components/permissions/permission_request_manager.cc"
 
 namespace permissions {
@@ -14,14 +14,16 @@ bool PermissionRequestManager::ShouldGroupRequests(PermissionRequest* a,
                                                    PermissionRequest* b) {
   std::string origin_a;
   std::string origin_b;
-  if (a->request_type() == RequestType::kBraveEthereum &&
-      b->request_type() == RequestType::kBraveEthereum &&
-      brave_wallet::ParseRequestingOriginFromSubRequest(a->requesting_origin(),
-                                                        &origin_a, nullptr) &&
-      brave_wallet::ParseRequestingOriginFromSubRequest(b->requesting_origin(),
-                                                        &origin_b, nullptr) &&
-      origin_a == origin_b) {
-    return true;
+  if (a->request_type() == RequestType::kBraveEthereum ||
+      a->request_type() == RequestType::kBraveSolana) {
+    if (a->request_type() == b->request_type() &&
+        brave_wallet::ParseRequestingOriginFromSubRequest(
+            a->request_type(), a->requesting_origin(), &origin_a, nullptr) &&
+        brave_wallet::ParseRequestingOriginFromSubRequest(
+            b->request_type(), b->requesting_origin(), &origin_b, nullptr) &&
+        origin_a == origin_b) {
+      return true;
+    }
   }
 
   return ::permissions::ShouldGroupRequests(a, b);

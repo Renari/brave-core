@@ -8,9 +8,9 @@
 #include "base/feature_list.h"
 #include "base/memory/raw_ptr.h"
 #include "base/test/scoped_feature_list.h"
-#include "brave/components/brave_wallet/browser/ethereum_permission_utils.h"
+#include "brave/components/brave_wallet/browser/permission_utils.h"
 #include "brave/components/brave_wallet/common/features.h"
-#include "brave/components/permissions/contexts/brave_ethereum_permission_context.h"
+#include "brave/components/permissions/contexts/brave_wallet_permission_context.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/permissions/permission_manager_factory.h"
 #include "chrome/browser/profiles/profile.h"
@@ -140,7 +140,8 @@ IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
   std::vector<GURL> sub_request_origins(addresses.size(), GURL(""));
   for (size_t i = 0; i < addresses.size(); i++) {
     ASSERT_TRUE(brave_wallet::GetSubRequestOrigin(
-        GetLastCommitedOrigin(), addresses[i], &sub_request_origins[i]));
+        permissions::RequestType::kBraveEthereum, GetLastCommitedOrigin(),
+        addresses[i], &sub_request_origins[i]));
   }
 
   GURL origin;
@@ -169,7 +170,7 @@ IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
   }
 
   // Test dismissing request.
-  permissions::BraveEthereumPermissionContext::Cancel(web_contents());
+  permissions::BraveWalletPermissionContext::Cancel(web_contents());
   EXPECT_TRUE(observer->IsRequestsFinalized());
   EXPECT_TRUE(!observer->IsShowingBubble());
   EXPECT_TRUE(IsPendingGroupedRequestsEmpty());
@@ -200,7 +201,7 @@ IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
   }
 
   // Test accepting request with one of the address.
-  permissions::BraveEthereumPermissionContext::AcceptOrCancel(
+  permissions::BraveWalletPermissionContext::AcceptOrCancel(
       std::vector<std::string>{addresses[1]}, web_contents());
   std::vector<ContentSetting> expected_settings(
       {ContentSetting::CONTENT_SETTING_ASK,
@@ -234,7 +235,8 @@ IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
   std::vector<GURL> sub_request_origins(addresses.size(), GURL(""));
   for (size_t i = 0; i < addresses.size(); i++) {
     ASSERT_TRUE(brave_wallet::GetSubRequestOrigin(
-        GetLastCommitedOrigin(), addresses[i], &sub_request_origins[i]));
+        permissions::RequestType::kBraveEthereum, GetLastCommitedOrigin(),
+        addresses[i], &sub_request_origins[i]));
   }
 
   GURL origin;
@@ -287,8 +289,8 @@ IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
   auto* iframe_rfh = ChildFrameAt(web_contents()->GetMainFrame(), 0);
 
   // Will return empty responses without prompt.
-  BraveEthereumPermissionContext::RequestPermissions(
-      iframe_rfh, addresses,
+  BraveWalletPermissionContext::RequestPermissions(
+      ContentSettingsType::BRAVE_ETHEREUM, iframe_rfh, addresses,
       base::BindOnce([](const std::vector<ContentSetting>& responses) {
         EXPECT_TRUE(responses.empty());
       }));

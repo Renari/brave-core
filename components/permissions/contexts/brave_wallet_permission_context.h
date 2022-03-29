@@ -1,10 +1,10 @@
-/* Copyright (c) 2021 The Brave Authors. All rights reserved.
+/* Copyright (c) 2022 The Brave Authors. All rights reserved.
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_COMPONENTS_PERMISSIONS_CONTEXTS_BRAVE_ETHEREUM_PERMISSION_CONTEXT_H_
-#define BRAVE_COMPONENTS_PERMISSIONS_CONTEXTS_BRAVE_ETHEREUM_PERMISSION_CONTEXT_H_
+#ifndef BRAVE_COMPONENTS_PERMISSIONS_CONTEXTS_BRAVE_WALLET_PERMISSION_CONTEXT_H_
+#define BRAVE_COMPONENTS_PERMISSIONS_CONTEXTS_BRAVE_WALLET_PERMISSION_CONTEXT_H_
 
 #include <map>
 #include <queue>
@@ -13,9 +13,9 @@
 
 #include "components/permissions/permission_context_base.h"
 #include "components/permissions/permission_request_id.h"
+#include "components/permissions/request_type.h"
 
 class GURL;
-class HostContentSettingsMap;
 
 namespace content {
 class BrowserContext;
@@ -24,17 +24,17 @@ class WebContents;
 
 namespace permissions {
 
-class BraveEthereumPermissionContext : public PermissionContextBase {
+class BraveWalletPermissionContext : public PermissionContextBase {
  public:
   // using PermissionContextBase::RequestPermission;
-  explicit BraveEthereumPermissionContext(
-      content::BrowserContext* browser_context);
-  ~BraveEthereumPermissionContext() override;
+  explicit BraveWalletPermissionContext(
+      content::BrowserContext* browser_context,
+      ContentSettingsType content_settings_type);
+  ~BraveWalletPermissionContext() override;
 
-  BraveEthereumPermissionContext(const BraveEthereumPermissionContext&) =
+  BraveWalletPermissionContext(const BraveWalletPermissionContext&) = delete;
+  BraveWalletPermissionContext& operator=(const BraveWalletPermissionContext&) =
       delete;
-  BraveEthereumPermissionContext& operator=(
-      const BraveEthereumPermissionContext&) = delete;
 
   /**
    * This is called by PermissionManager::RequestPermissions, for each
@@ -50,30 +50,36 @@ class BraveEthereumPermissionContext : public PermissionContextBase {
                          BrowserPermissionCallback callback) override;
 
   static void RequestPermissions(
+      ContentSettingsType content_settings_type,
       content::RenderFrameHost* rfh,
       const std::vector<std::string>& addresses,
       base::OnceCallback<void(const std::vector<ContentSetting>&)> callback);
-  static bool HasRequestsInProgress(content::RenderFrameHost* rfh);
+  static bool HasRequestsInProgress(content::RenderFrameHost* rfh,
+                                    permissions::RequestType request_type);
 
   static void AcceptOrCancel(const std::vector<std::string>& accounts,
                              content::WebContents* web_contents);
   static void Cancel(content::WebContents* web_contents);
 
   static void GetAllowedAccounts(
+      ContentSettingsType content_settings_type,
       content::RenderFrameHost* rfh,
       const std::vector<std::string>& addresses,
       base::OnceCallback<void(bool, const std::vector<std::string>&)> callback);
 
-  static bool AddEthereumPermission(content::BrowserContext* context,
-                                    const std::string& origin_spec,
-                                    const std::string& account);
-  static bool HasEthereumPermission(content::BrowserContext* context,
-                                    const std::string& origin_spec,
-                                    const std::string& account,
-                                    bool* has_permission);
-  static bool ResetEthereumPermission(content::BrowserContext* context,
-                                      const std::string& origin_spec,
-                                      const std::string& account);
+  static bool AddPermission(ContentSettingsType content_settings_type,
+                            content::BrowserContext* context,
+                            const std::string& origin_spec,
+                            const std::string& account);
+  static bool HasPermission(ContentSettingsType content_settings_type,
+                            content::BrowserContext* context,
+                            const std::string& origin_spec,
+                            const std::string& account,
+                            bool* has_permission);
+  static bool ResetPermission(ContentSettingsType content_settings_type,
+                              content::BrowserContext* context,
+                              const std::string& origin_spec,
+                              const std::string& account);
 
  protected:
   bool IsRestrictedToSecureOrigins() const override;
@@ -84,4 +90,4 @@ class BraveEthereumPermissionContext : public PermissionContextBase {
 
 }  // namespace permissions
 
-#endif  // BRAVE_COMPONENTS_PERMISSIONS_CONTEXTS_BRAVE_ETHEREUM_PERMISSION_CONTEXT_H_
+#endif  // BRAVE_COMPONENTS_PERMISSIONS_CONTEXTS_BRAVE_WALLET_PERMISSION_CONTEXT_H_
