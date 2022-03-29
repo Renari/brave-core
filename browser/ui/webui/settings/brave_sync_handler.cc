@@ -30,6 +30,32 @@
 #include "ui/base/l10n/l10n_util.h"
 #include "ui/base/webui/web_ui_util.h"
 
+namespace {
+
+std::string GetSyncCodeValidationString(
+    brave_sync::WordsValidationResult validation_result) {
+  using brave_sync::WordsValidationResult;
+  switch (validation_result) {
+    case WordsValidationResult::kValid:
+      return "";
+    case WordsValidationResult::kWrongWordsNumber:
+    case WordsValidationResult::kNotValidPureWords:
+      return l10n_util::GetStringUTF8(IDS_BRAVE_SYNC_CODE_INVALID);
+    case WordsValidationResult::kVersionDeprecated:
+      return l10n_util::GetStringUTF8(
+          IDS_BRAVE_SYNC_CODE_FROM_DEPRECATED_VERSION);
+    case WordsValidationResult::kExpired:
+      return l10n_util::GetStringUTF8(IDS_BRAVE_SYNC_CODE_EXPIRED);
+    case WordsValidationResult::kValidForTooLong:
+      return l10n_util::GetStringUTF8(IDS_BRAVE_SYNC_CODE_VALID_FOR_TOO_LONG);
+    default:
+      NOTREACHED();
+      return "";
+  }
+}
+
+}  // namespace
+
 BraveSyncHandler::BraveSyncHandler() : weak_ptr_factory_(this) {}
 
 BraveSyncHandler::~BraveSyncHandler() {}
@@ -148,29 +174,6 @@ void BraveSyncHandler::HandleGetQRCode(base::Value::ConstListView args) {
                      std::move(callback_id_arg)));
 }
 
-std::string GetSyncCodeValidationString(
-    brave_sync::WordsValidationResult validation_result) {
-  using brave_sync::WordsValidationResult;
-  switch (validation_result) {
-    case WordsValidationResult::kValid:
-      return "";
-    case WordsValidationResult::kWrongWordsNumber:
-    case WordsValidationResult::kNotValidPureWords:
-      return l10n_util::GetStringUTF8(IDS_BRAVE_SYNC_CODE_INVALID);
-    case WordsValidationResult::kVersionDeprecated:
-      return l10n_util::GetStringUTF8(
-          IDS_BRAVE_SYNC_CODE_FROM_DEPRECATED_VERSION);
-    case WordsValidationResult::kExpired:
-      return l10n_util::GetStringUTF8(IDS_BRAVE_SYNC_CODE_EXPIRED);
-    case WordsValidationResult::kValidForTooLong:
-      return l10n_util::GetStringUTF8(IDS_BRAVE_SYNC_CODE_VALID_FOR_TOO_LONG);
-    default:
-      NOTREACHED();
-  }
-
-  return "UNKNOWN";
-}
-
 void BraveSyncHandler::HandleSetSyncCode(base::Value::ConstListView args) {
   AllowJavascript();
   CHECK_EQ(2U, args.size());
@@ -188,9 +191,11 @@ void BraveSyncHandler::HandleSetSyncCode(base::Value::ConstListView args) {
                                              &pure_sync_code);
   if (validation_result != brave_sync::WordsValidationResult::kValid) {
     LOG(ERROR) << "Could not validate a sync code, validation_result="
-               << static_cast<int>(validation_result) << " " << GetSyncCodeValidationString(validation_result);
-    //RejectJavascriptCallback(args[0].Clone(), base::Value(false));
-    RejectJavascriptCallback(args[0].Clone(), base::Value(GetSyncCodeValidationString(validation_result)));
+               << static_cast<int>(validation_result) << " "
+               << GetSyncCodeValidationString(validation_result);
+    RejectJavascriptCallback(
+        args[0].Clone(),
+        base::Value(GetSyncCodeValidationString(validation_result)));
     return;
   }
 
