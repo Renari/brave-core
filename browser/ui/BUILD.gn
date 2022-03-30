@@ -132,6 +132,8 @@ source_set("ui") {
       "webui/settings/brave_wallet_handler.h",
       "webui/settings/default_brave_shields_handler.cc",
       "webui/settings/default_brave_shields_handler.h",
+      "webui/settings/brave_adblock_handler.cc",
+      "webui/settings/brave_adblock_handler.h",
     ]
 
     if (is_mac) {
