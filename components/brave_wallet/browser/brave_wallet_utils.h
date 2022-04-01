@@ -125,7 +125,7 @@ std::string GetCurrentChainId(PrefService* prefs, mojom::CoinType coin);
 // Otherwise returns an empty GURL
 GURL GetFirstValidChainURL(const std::vector<std::string>& chain_urls);
 
-absl::optional<std::string> GetPrefKeyForCoinType(mojom::CoinType coin);
+std::string GetPrefKeyForCoinType(mojom::CoinType coin);
 
 /**
  * Given an url, return eTLD + 1 for that URL
