@@ -90,6 +90,7 @@ describe('useSwap hook', () => {
       symbol: 'USDC',
       tokenId: '',
       visible: true,
+      coin: BraveWallet.CoinType.ETH,
       chainId: BraveWallet.ROPSTEN_CHAIN_ID
     })
   })

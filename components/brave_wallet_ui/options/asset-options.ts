@@ -90,7 +90,8 @@ export const ETH = {
   visible: true,
   tokenId: '',
   coingeckoId: '',
-  chainId: '0x1'
+  chainId: '0x1',
+  coin: BraveWallet.CoinType.ETH
 } as BraveWallet.BlockchainToken
 
 export const BAT = {
@@ -103,7 +104,8 @@ export const BAT = {
   decimals: 18,
   visible: false,
   tokenId: '',
-  coingeckoId: ''
+  coingeckoId: '',
+  coin: BraveWallet.CoinType.ETH
 } as BraveWallet.BlockchainToken
 
 // Use only with storybook as dummy data.
@@ -120,7 +122,8 @@ export const NewAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '3',
@@ -133,7 +136,8 @@ export const NewAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x3'
+    chainId: '0x3',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '4',
@@ -146,7 +150,8 @@ export const NewAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '5',
@@ -159,7 +164,8 @@ export const NewAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '6',
@@ -172,7 +178,8 @@ export const NewAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '7',
@@ -185,7 +192,8 @@ export const NewAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '0x42a5',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   }
 ]
 
@@ -203,7 +211,8 @@ export const AccountAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '3',
@@ -216,7 +225,8 @@ export const AccountAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '4',
@@ -229,7 +239,8 @@ export const AccountAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '5',
@@ -242,7 +253,8 @@ export const AccountAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   },
   {
     contractAddress: '0xE41d2489571d322189246DaFA5ebDe1F4699F498',
@@ -255,6 +267,7 @@ export const AccountAssetOptions: BraveWallet.BlockchainToken[] = [
     visible: true,
     tokenId: '',
     coingeckoId: '',
-    chainId: '0x1'
+    chainId: '0x1',
+    coin: BraveWallet.CoinType.ETH
   }
 ]
