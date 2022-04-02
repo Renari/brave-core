@@ -13,7 +13,8 @@ namespace webui {
 
 namespace {
 constexpr char kBraveCSP[] =
-    "script-src chrome://resources chrome://brave-resources chrome://test "
+    "script-src chrome://resources chrome-untrusted://resources "
+    "chrome://brave-resources chrome-untrusted://brave-resources chrome://test "
     "'self';";
 }  // namespace
 

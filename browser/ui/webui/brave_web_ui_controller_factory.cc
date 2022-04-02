@@ -18,7 +18,6 @@
 #include "brave/common/brave_features.h"
 #include "brave/common/pref_names.h"
 #include "brave/common/webui_url_constants.h"
-#include "brave/components/brave_vpn/buildflags/buildflags.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
 #include "brave/components/sidebar/buildflags/buildflags.h"
 #include "brave/components/tor/buildflags/buildflags.h"
@@ -39,11 +38,6 @@
 #include "brave/components/brave_shields/common/features.h"
 #include "brave/components/brave_wallet/browser/brave_wallet_utils.h"
 #include "brave/components/brave_wallet/common/brave_wallet.mojom.h"
-#endif
-
-#if BUILDFLAG(ENABLE_BRAVE_VPN) && !BUILDFLAG(IS_ANDROID)
-#include "brave/browser/ui/webui/brave_vpn/vpn_panel_ui.h"
-#include "brave/components/brave_vpn/brave_vpn_utils.h"
 #endif
 
 #if BUILDFLAG(ETHEREUM_REMOTE_CLIENT_ENABLED)
@@ -103,12 +97,6 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
   } else if (host == kWalletPanelHost) {
     return new WalletPanelUI(web_ui);
 #endif  // BUILDFLAG(OS_ANDROID)
-#if BUILDFLAG(ENABLE_BRAVE_VPN) && !BUILDFLAG(IS_ANDROID)
-  } else if (host == kVPNPanelHost) {
-    if (brave_vpn::IsBraveVPNEnabled()) {
-      return new VPNPanelUI(web_ui);
-    }
-#endif  // BUILDFLAG(ENABLE_BRAVE_VPN)
   } else if (host == kRewardsPageHost) {
     return new BraveRewardsPageUI(web_ui, url.host());
   } else if (host == kRewardsInternalsHost) {
@@ -145,8 +133,7 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
 // Returns a function that can be used to create the right type of WebUI for a
 // tab, based on its URL. Returns NULL if the URL doesn't have WebUI associated
 // with it.
-WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
-                                             const GURL& url) {
+WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui, const GURL& url) {
   if (url.host_piece() == kAdblockHost ||
       url.host_piece() == kWebcompatReporterHost ||
 #if !BUILDFLAG(IS_ANDROID)
@@ -158,9 +145,6 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
       (url.host_piece() == kIPFSWebUIHost &&
        base::FeatureList::IsEnabled(ipfs::features::kIpfsFeature)) ||
 #endif  // BUILDFLAG(ENABLE_IPFS)
-#if BUILDFLAG(ENABLE_BRAVE_VPN) && !BUILDFLAG(IS_ANDROID)
-      (url.host_piece() == kVPNPanelHost && brave_vpn::IsBraveVPNEnabled()) ||
-#endif
 #if BUILDFLAG(ENABLE_SIDEBAR)
       url.host_piece() == kSidebarBookmarksHost ||
 #endif
@@ -189,8 +173,8 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
 }
 
 #if BUILDFLAG(IS_ANDROID)
-bool ShouldBlockRewardsWebUI(
-      content::BrowserContext* browser_context, const GURL& url) {
+bool ShouldBlockRewardsWebUI(content::BrowserContext* browser_context,
+                             const GURL& url) {
   if (url.host_piece() != kRewardsPageHost &&
       url.host_piece() != kRewardsInternalsHost) {
     return false;
@@ -199,8 +183,7 @@ bool ShouldBlockRewardsWebUI(
     return true;
   }
   Profile* profile = Profile::FromBrowserContext(browser_context);
-  if (profile &&
-      profile->GetPrefs() &&
+  if (profile && profile->GetPrefs() &&
       profile->GetPrefs()->GetBoolean(kSafetynetCheckFailed)) {
     return true;
   }
@@ -211,7 +194,8 @@ bool ShouldBlockRewardsWebUI(
 }  // namespace
 
 WebUI::TypeID BraveWebUIControllerFactory::GetWebUIType(
-      content::BrowserContext* browser_context, const GURL& url) {
+    content::BrowserContext* browser_context,
+    const GURL& url) {
 #if BUILDFLAG(IS_ANDROID)
   if (ShouldBlockRewardsWebUI(browser_context, url)) {
     return WebUI::kNoWebUI;
@@ -229,21 +213,18 @@ BraveWebUIControllerFactory::CreateWebUIControllerForURL(WebUI* web_ui,
                                                          const GURL& url) {
   WebUIFactoryFunction function = GetWebUIFactoryFunction(web_ui, url);
   if (!function) {
-    return ChromeWebUIControllerFactory::CreateWebUIControllerForURL(
-        web_ui, url);
+    return ChromeWebUIControllerFactory::CreateWebUIControllerForURL(web_ui,
+                                                                     url);
   }
 
   return base::WrapUnique((*function)(web_ui, url));
 }
-
 
 // static
 BraveWebUIControllerFactory* BraveWebUIControllerFactory::GetInstance() {
   return base::Singleton<BraveWebUIControllerFactory>::get();
 }
 
-BraveWebUIControllerFactory::BraveWebUIControllerFactory() {
-}
+BraveWebUIControllerFactory::BraveWebUIControllerFactory() {}
 
-BraveWebUIControllerFactory::~BraveWebUIControllerFactory() {
-}
+BraveWebUIControllerFactory::~BraveWebUIControllerFactory() {}

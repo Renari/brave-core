@@ -6,6 +6,7 @@
 #include "brave/browser/ui/webui/brave_vpn/vpn_panel_ui.h"
 
 #include <memory>
+#include <string>
 #include <utility>
 
 #include "base/bind.h"
@@ -25,11 +26,17 @@
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_ui.h"
 #include "content/public/browser/web_ui_data_source.h"
+#include "content/public/common/bindings_policy.h"
+#include "content/public/common/url_constants.h"
+#include "ui/webui/untrusted_web_ui_controller.h"
 
 VPNPanelUI::VPNPanelUI(content::WebUI* web_ui)
-    : ui::MojoBubbleWebUIController(web_ui, true) {
+    : ui::UntrustedWebUIController(web_ui) {
+  // From MojoWebUIController
+  web_ui->SetBindings(content::BINDINGS_POLICY_MOJO_WEB_UI);
+
   content::WebUIDataSource* source =
-      content::WebUIDataSource::Create(kVPNPanelHost);
+      content::WebUIDataSource::Create(kVPNPanelURL);
 
   source->AddLocalizedStrings(brave_vpn::kLocalizedStrings);
 
@@ -37,6 +44,17 @@ VPNPanelUI::VPNPanelUI(content::WebUI* web_ui)
       source,
       base::make_span(kBraveVpnPanelGenerated, kBraveVpnPanelGeneratedSize),
       IDR_VPN_PANEL_HTML);
+
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::StyleSrc,
+      std::string("style-src chrome-untrusted://resources "
+                  "chrome-untrusted://brave-resources 'unsafe-inline';"));
+
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::FontSrc,
+      std::string("font-src chrome-untrusted://brave-resources "
+                  "chrome-untrusted://resources;"));
+
   content::WebUIDataSource::Add(web_ui->GetWebContents()->GetBrowserContext(),
                                 source);
   Profile* profile = Profile::FromWebUI(web_ui);
@@ -73,3 +91,11 @@ void VPNPanelUI::CreatePanelHandler(
     vpn_service_desktop->BindInterface(std::move(vpn_service_receiver));
   }
 }
+
+std::unique_ptr<content::WebUIController>
+UntrustedVPNPanelUIConfig::CreateWebUIController(content::WebUI* web_ui) {
+  return std::make_unique<VPNPanelUI>(web_ui);
+}
+
+UntrustedVPNPanelUIConfig::UntrustedVPNPanelUIConfig()
+    : WebUIConfig(content::kChromeUIUntrustedScheme, kVPNPanelHost) {}
