@@ -7,13 +7,9 @@ module federated_internals.mojom;
 
 struct AdStoreLog {
     int32 log_id;
-
     double log_time;
-
     string log_locale;
-
     int32 log_number_of_tabs;
-
     bool log_label;
 };
 

@@ -141,6 +141,6 @@
     "includes": [58500]
   },
   "<(SHARED_INTERMEDIATE_DIR)/brave/browser/resources/federated_internals/federated_internals_resources.grd": {
-    "includes": [51750]
+    "includes": [58750]
   },
 }

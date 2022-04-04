@@ -40,8 +40,8 @@ source_set("ui") {
   sources = [
     "webui/brave_adblock_ui.cc",
     "webui/brave_adblock_ui.h",
-    "webui/brave_federated/federated_internals_page_handler_impl.cc",
-    "webui/brave_federated/federated_internals_page_handler_impl.h",
+    "webui/brave_federated/federated_internals_page_handler.cc",
+    "webui/brave_federated/federated_internals_page_handler.h",
     "webui/brave_federated/federated_internals_ui.cc",
     "webui/brave_federated/federated_internals_ui.h",
     "webui/brave_rewards_internals_ui.cc",

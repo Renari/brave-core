@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/browser/ui/webui/brave_federated/federated_internals_page_handler_impl.h"
+#include "brave/browser/ui/webui/brave_federated/federated_internals_page_handler.h"
 
 #include <string>
 #include <utility>
@@ -16,7 +16,7 @@
 #include "brave/components/brave_federated/data_stores/ad_notification_timing_data_store.h"
 #include "chrome/browser/profiles/profile.h"
 
-FederatedInternalsPageHandlerImpl::FederatedInternalsPageHandlerImpl(
+FederatedInternalsPageHandler::FederatedInternalsPageHandler(
     mojo::PendingReceiver<federated_internals::mojom::PageHandler> receiver,
     mojo::PendingRemote<federated_internals::mojom::Page> page,
     Profile* profile)
@@ -27,26 +27,26 @@ FederatedInternalsPageHandlerImpl::FederatedInternalsPageHandlerImpl(
               profile)
               ->GetDataStoreService()) {}
 
-FederatedInternalsPageHandlerImpl::~FederatedInternalsPageHandlerImpl() {}
+FederatedInternalsPageHandler::~FederatedInternalsPageHandler() {}
 
-void FederatedInternalsPageHandlerImpl::GetAdStoreInfo() {
+void FederatedInternalsPageHandler::GetAdStoreInfo() {
   if (!data_store_service_)
     return;
   auto* const ad_notification_data_store =
       data_store_service_->GetAdNotificationTimingDataStore();
 
   ad_notification_data_store->LoadLogs(
-      base::BindOnce(&FederatedInternalsPageHandlerImpl::OnAdStoreInfoAvailable,
+      base::BindOnce(&FederatedInternalsPageHandler::OnAdStoreInfoAvailable,
                      weak_ptr_factory_.GetWeakPtr()));
 }
 
-void FederatedInternalsPageHandlerImpl::OnAdStoreInfoAvailable(
+void FederatedInternalsPageHandler::OnAdStoreInfoAvailable(
     brave_federated::AdNotificationTimingDataStore::
         IdToAdNotificationTimingTaskLogMap ad_notification_timing_logs) {
   std::vector<federated_internals::mojom::AdStoreLogPtr> ad_logs;
   for (auto const& object : ad_notification_timing_logs) {
     auto ad_store_log = federated_internals::mojom::AdStoreLog::New();
-    auto log = object.second;
+    const auto& log = object.second;
     ad_store_log->log_id = log.id;
     ad_store_log->log_time = log.time.ToJsTime();
     ad_store_log->log_locale = log.locale;

@@ -15,7 +15,7 @@
 #include "brave/browser/brave_federated/brave_federated_service_factory.h"
 #include "brave/browser/resources/federated_internals/grit/federated_internals_resources.h"
 #include "brave/browser/resources/federated_internals/grit/federated_internals_resources_map.h"
-#include "brave/browser/ui/webui/brave_federated/federated_internals_page_handler_impl.h"
+#include "brave/browser/ui/webui/brave_federated/federated_internals_page_handler.h"
 #include "brave/browser/ui/webui/brave_webui_source.h"
 #include "brave/common/webui_url_constants.h"
 #include "brave/components/brave_federated/brave_federated_service.h"
@@ -62,6 +62,6 @@ void FederatedInternalsUI::CreatePageHandler(
     mojo::PendingReceiver<federated_internals::mojom::PageHandler>
         receiver) {
   federated_internals_page_handler_ =
-      std::make_unique<FederatedInternalsPageHandlerImpl>(
+      std::make_unique<FederatedInternalsPageHandler>(
           std::move(receiver), std::move(page), profile_);
 }

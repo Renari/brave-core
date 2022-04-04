@@ -3,12 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_BROWSER_UI_WEBUI_BRAVE_FEDERATED_FEDERATED_INTERNALS_PAGE_HANDLER_IMPL_H_
-#define BRAVE_BROWSER_UI_WEBUI_BRAVE_FEDERATED_FEDERATED_INTERNALS_PAGE_HANDLER_IMPL_H_
+#ifndef BRAVE_BROWSER_UI_WEBUI_BRAVE_FEDERATED_FEDERATED_INTERNALS_PAGE_HANDLER_H_
+#define BRAVE_BROWSER_UI_WEBUI_BRAVE_FEDERATED_FEDERATED_INTERNALS_PAGE_HANDLER_H_
 
 #include <string>
 #include <vector>
 
+#include "base/memory/raw_ptr.h"
 #include "base/memory/weak_ptr.h"
 #include "brave/browser/ui/webui/brave_federated/federated_internals.mojom.h"
 #include "brave/components/brave_federated/data_store_service.h"
@@ -18,19 +19,19 @@
 
 class Profile;
 
-class FederatedInternalsPageHandlerImpl
+class FederatedInternalsPageHandler
     : public federated_internals::mojom::PageHandler {
  public:
-  FederatedInternalsPageHandlerImpl(
+  FederatedInternalsPageHandler(
       mojo::PendingReceiver<federated_internals::mojom::PageHandler> receiver,
       mojo::PendingRemote<federated_internals::mojom::Page> page,
       Profile* profile);
-  ~FederatedInternalsPageHandlerImpl() override;
+  ~FederatedInternalsPageHandler() override;
 
-  FederatedInternalsPageHandlerImpl(const FederatedInternalsPageHandlerImpl&) =
+  FederatedInternalsPageHandler(const FederatedInternalsPageHandler&) =
       delete;
-  FederatedInternalsPageHandlerImpl& operator=(
-      const FederatedInternalsPageHandlerImpl&) = delete;
+  FederatedInternalsPageHandler& operator=(
+      const FederatedInternalsPageHandler&) = delete;
 
   void GetAdStoreInfo() override;
 
@@ -41,10 +42,10 @@ class FederatedInternalsPageHandlerImpl
 
   mojo::Receiver<federated_internals::mojom::PageHandler> receiver_;
   mojo::Remote<federated_internals::mojom::Page> page_;
-  brave_federated::DataStoreService* data_store_service_;
+  raw_ptr<brave_federated::DataStoreService> data_store_service_;
 
-  base::WeakPtrFactory<FederatedInternalsPageHandlerImpl> weak_ptr_factory_{
+  base::WeakPtrFactory<FederatedInternalsPageHandler> weak_ptr_factory_{
       this};
 };
 
-#endif  // BRAVE_BROWSER_UI_WEBUI_BRAVE_FEDERATED_FEDERATED_INTERNALS_PAGE_HANDLER_IMPL_H_
+#endif  // BRAVE_BROWSER_UI_WEBUI_BRAVE_FEDERATED_FEDERATED_INTERNALS_PAGE_HANDLER_H_

@@ -1,5 +1,5 @@
-<!DOCTYPE HTML>
-<html i18n-values="dir:textdirection">
+<!doctype html>
+<html dir="$i18n{textdirection}" lang="$i18n{language}">
 <head>
   <meta charset="utf-8">
   <title>Federated Learning Internals</title>
@@ -20,9 +20,11 @@
     <button id="data-store-logs-dump">Dump</button>
 
     <p id="service-message"></p>
+    <!-- table displaying local ad timing logs -->
     <table id="ad-timing-tab">
       <thead>
-        <tr id="ad-timing-headers"></tr>
+        <tr id="ad-timing-headers">
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
